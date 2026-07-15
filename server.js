@@ -29,9 +29,9 @@ app.post("/ask", async (req, res) => {
         );
 
         const data = await response.json();
-
-        console.log("Gemini response:", data);
-
+        console.log("FULL GEMINI RESPONSE:",
+        JSON.stringify(data));
+        
         const reply =
             data.candidates?.[0]?.content?.parts?.[0]?.text ||
             "No response from AI.";
