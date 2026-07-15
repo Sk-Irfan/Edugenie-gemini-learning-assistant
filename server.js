@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
 
@@ -13,7 +12,7 @@ app.post("/ask", async (req, res) => {
 
     try {
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: "POST",
                 headers: {
@@ -31,6 +30,8 @@ app.post("/ask", async (req, res) => {
 
         const data = await response.json();
 
+        console.log("Gemini response:", data);
+
         const reply =
             data.candidates?.[0]?.content?.parts?.[0]?.text ||
             "No response from AI.";
@@ -38,7 +39,7 @@ app.post("/ask", async (req, res) => {
         res.json({ reply });
 
     } catch (error) {
-        console.error(error);
+        console.error("Error:", error);
         res.status(500).json({ reply: "Error generating response." });
     }
 });
