@@ -12,19 +12,18 @@ app.post("/ask", async (req, res) => {
 
   try {
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
+          "Authorization": `Bearer ${process.env.GEMINI_API_KEY}`,
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: userMessage }],
-            },
-          ],
+          model: "gemini-1.5-flash",
+          messages: [
+            { role: "user", content: userMessage }
+          ]
         }),
       }
     );
@@ -32,10 +31,11 @@ app.post("/ask", async (req, res) => {
     const data = await response.json();
 
     const reply =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data.choices?.[0]?.message?.content ||
       JSON.stringify(data);
 
     res.json({ reply });
+
   } catch (error) {
     res.json({ reply: "Server Error" });
   }
